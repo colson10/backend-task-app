@@ -2,10 +2,12 @@
 
 import express from 'express';
 // import logger from './logger';
+import googleRouter from '../routes/google-oauth-router';
 
 const app = express();
 const server = null;
 
+app.use(googleRouter);
 app.all('*', (request, response) => {
   // logger.log(logger.INFO, 'Returning a 404 from the catch/all default route');
   return response.sendStatus(404);

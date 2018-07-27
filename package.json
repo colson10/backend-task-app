@@ -4,11 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "eslint . && jest --coverage",
-    "watch": "webpack-dev-server --config webpack.dev.js",
-    "pack": "webpack --config webpack.prod.js",
-    "heroku-postbuild": "webpack --progress --config webpack.prod.js",
-    "start": "node index.js"
+    "test": "eslint . && jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -25,7 +21,8 @@
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "mongoose": "^5.2.5",
-    "nodemon": "^1.18.3"
+    "nodemon": "^1.18.3",
+    "superagent": "^3.8.3"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.6",
