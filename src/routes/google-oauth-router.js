@@ -62,7 +62,7 @@ googleRouter.get('/oauth/google', (request, response) => {
                       return createProfile(user)
                         .then(() => {
                           response
-                            .cookie('TASKsubTASK', token)
+                            .cookie('TASKsubtask', token)
                             .redirect(process.env.CLIENT_URL);
                         });
                     });
@@ -71,7 +71,7 @@ googleRouter.get('/oauth/google', (request, response) => {
             return account.pCreateLoginToken()
               .then((token) => {
                 return response
-                  .cookie('TASKsubTASK', token)
+                  .cookie('TASKsubtask', token)
                   .redirect(process.env.CLIENT_URL);
               });
           });
