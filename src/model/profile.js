@@ -22,13 +22,13 @@ const profileSchema = mongoose.Schema({
   tasks: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'event',
+      ref: 'task',
     },
   ],
   subtasks: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'post',
+      ref: 'subtask',
     },
   ],
 });
