@@ -46,7 +46,6 @@ accountSchema.methods.pCreateLoginToken = pCreateLoginToken;
 const Account = mongoose.model('account', accountSchema);
 
 Account.create = (email, username) => {
-  console.log('inside account create');
   const tokenSeed = crypto.randomBytes(TOKEN_SEED_LENGTH).toString('hex');
   return new Account({
     username,

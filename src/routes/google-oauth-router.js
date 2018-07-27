@@ -44,7 +44,6 @@ googleRouter.get('/oauth/google', (request, response) => {
           response.redirect(process.env.CLIENT_URL);
         }
         const accessToken = tokenResponse.body.access_token;
-        console.log(accessToken, 'accessToken');
         return superagent.get(OPEN_ID_URL)
           .set('Authorization', `Bearer ${accessToken}`);
       })
@@ -52,11 +51,9 @@ googleRouter.get('/oauth/google', (request, response) => {
         console.log('__STEP 4 - OPEN ID__');
         user.username = openIDResponse.body.name;
         user.email = openIDResponse.body.email;
-        console.log(user);
         return Account.findOne({ email: user.email })
           .then((account) => {
             if (!account) {
-              console.log('no account');
               return Account.create(user.email, user.username)
                 .then((newAccount) => {
                   user.id = newAccount._id;

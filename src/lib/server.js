@@ -1,14 +1,21 @@
 'use strict';
 
+import cors from 'cors';
 import express from 'express';
 import mongoose from 'mongoose';
 import logger from './logger';
 import googleRouter from '../routes/google-oauth-router';
 import profileRouter from '../routes/profile-router';
+import loggerMiddleware from './logger-middleware';
 
 const app = express();
 let server = null;
 
+app.use(cors({
+  credentials: true,
+  origin: process.env.CORS_ORIGIN,
+}));
+app.use(loggerMiddleware);
 app.use(googleRouter);
 app.use(profileRouter);
 app.all('*', (request, response) => {
