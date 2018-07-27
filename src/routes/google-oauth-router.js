@@ -2,13 +2,24 @@
 
 import superagent from 'superagent';
 import { Router } from 'express';
+import Account from '../model/account';
+import Profile from '../model/profile';
 
 const GOOGLE_OAUTH_URL = 'https://www.googleapis.com/oauth2/v4/token';
 const OPEN_ID_URL = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect';
 
 const googleRouter = new Router();
 
+const createProfile = (user) => {
+  return new Profile({
+    username: user.username,
+    email: user.email,
+    account: user.id,
+  }).save();
+};
+
 googleRouter.get('/oauth/google', (request, response) => {
+  const user = {};
   console.log('__STEP 3.1 - RECEIVING CODE__');
   if (!request.query.code) {
     response.redirect(process.env.CLIENT_URL);
@@ -39,12 +50,34 @@ googleRouter.get('/oauth/google', (request, response) => {
       })
       .then((openIDResponse) => {
         console.log('__STEP 4 - OPEN ID__');
-        console.log(openIDResponse.body);
-
-        // STEP 5 - create our own account, token, and send TOKEN back to the application
-
-        response.cookie('TASKsubTASK', 'hello, I am here in place of a token!');
-        response.redirect(process.env.CLIENT_URL);
+        user.username = openIDResponse.body.name;
+        user.email = openIDResponse.body.email;
+        console.log(user);
+        return Account.findOne({ email: user.email })
+          .then((account) => {
+            if (!account) {
+              console.log('no account');
+              return Account.create(user.email, user.username)
+                .then((newAccount) => {
+                  user.id = newAccount._id;
+                  return newAccount.pCreateLoginToken()
+                    .then((token) => {
+                      return createProfile(user)
+                        .then(() => {
+                          response
+                            .cookie('TASKsubTASK', token)
+                            .redirect(process.env.CLIENT_URL);
+                        });
+                    });
+                });
+            } 
+            return account.pCreateLoginToken()
+              .then((token) => {
+                return response
+                  .cookie('TASKsubTASK', token)
+                  .redirect(process.env.CLIENT_URL);
+              });
+          });
       })
       .catch(() => {
         console.log('error');
