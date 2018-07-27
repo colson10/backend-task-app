@@ -10,12 +10,10 @@ const taskSchema = mongoose.Schema({
   },
   details: { 
     type: String, 
-    required: true,
   },
   profile: {
     type: mongoose.Schema.ObjectId,
     required: true,
-    unique: true,
   },
   subtasks: [
     {
