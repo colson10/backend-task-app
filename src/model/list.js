@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 import Profile from './profile';
 
-const taskSchema = mongoose.Schema({
+const listSchema = mongoose.Schema({
   title: { 
     type: String, 
     required: true,
@@ -15,10 +15,10 @@ const taskSchema = mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     required: true,
   },
-  subtasks: [
+  tasks: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'subtask',
+      ref: 'tasks',
     },
   ],
 });
@@ -26,8 +26,8 @@ const taskSchema = mongoose.Schema({
 function savePreHook(done) {
   return Profile.findById(this.profile)
     .then((profileFound) => {
-      if (profileFound.tasks.indexOf(this._id) < 0) {
-        profileFound.tasks.push(this._id);
+      if (profileFound.lists.indexOf(this._id) < 0) {
+        profileFound.lists.push(this._id);
       }
       return profileFound.save();
     })
@@ -49,7 +49,7 @@ function removeEventHook(document, next) {
     .catch(next);
 }
 
-taskSchema.pre('save', savePreHook);
-taskSchema.post('remove', removeEventHook);
+listSchema.pre('save', savePreHook);
+listSchema.post('remove', removeEventHook);
 
-export default mongoose.model('task', taskSchema);
+export default mongoose.model('list', listSchema);
