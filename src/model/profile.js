@@ -19,16 +19,16 @@ const profileSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
+  lists: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'list',
+    },
+  ],
   tasks: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'task',
-    },
-  ],
-  subtasks: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'subtask',
+      ref: 'tasks',
     },
   ],
 });
