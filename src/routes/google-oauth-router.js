@@ -28,10 +28,6 @@ googleRouter.get('/oauth/google', (request, response) => {
 
     console.log('__STEP 3.2 - SENDING THE CODE BACK__');
 
-    const redirectUri = `${process.env.API_URL}/oauth/google`;
-    console.log(redirectUri);
-    console.log(process.env.GOOGLE_CLIENT_ID);
-
     return superagent.post(GOOGLE_OAUTH_URL)
       .type('form')
       .send({
