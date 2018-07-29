@@ -61,7 +61,7 @@ googleRouter.get('/oauth/google', (request, response) => {
                     .then((token) => {
                       return createProfile(user)
                         .then(() => {
-                          response
+                          return response
                             .cookie('LISTsublist', token)
                             .redirect(process.env.CLIENT_URL);
                         });
