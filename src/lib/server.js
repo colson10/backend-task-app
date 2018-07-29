@@ -2,6 +2,7 @@
 
 import cors from 'cors';
 import express from 'express';
+import expressSession from 'express-session';
 import mongoose from 'mongoose';
 import logger from './logger';
 import googleRouter from '../routes/google-oauth-router';
@@ -11,6 +12,17 @@ import loggerMiddleware from './logger-middleware';
 
 const app = express();
 let server = null;
+
+app.enable('trust proxy'); // optional, not needed for secure cookies
+app.use(expressSession({
+  secret: 'somesecret',
+  key: 'sid',
+  proxy: true, // add this when behind a reverse proxy, if you need secure cookies
+  cookie: {
+    secure: true,
+    maxAge: 5184000000, // 2 months
+  },
+}));
 
 app.use(cors({
   credentials: true,
