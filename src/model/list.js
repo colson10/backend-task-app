@@ -18,7 +18,7 @@ const listSchema = mongoose.Schema({
   tasks: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'tasks',
+      ref: 'task',
     },
   ],
 });
@@ -37,19 +37,6 @@ function savePreHook(done) {
     .catch(done);
 }
 
-function removeEventHook(document, next) {
-  Profile.findById(document.profile)
-    .then((profileFound) => {
-      profileFound.events = profileFound.events.filter((event) => {
-        return event._id.toString() !== document._id.toString();
-      });
-      return profileFound.save();
-    })
-    .then(() => next())
-    .catch(next);
-}
-
 listSchema.pre('save', savePreHook);
-listSchema.post('remove', removeEventHook);
 
 export default mongoose.model('list', listSchema);
