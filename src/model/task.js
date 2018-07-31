@@ -27,7 +27,7 @@ const listSchema = mongoose.Schema({
   subtasks: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'subtasks',
+      ref: 'subtask',
     },
   ],
 });
@@ -57,4 +57,4 @@ function savePreHook(done) {
 
 listSchema.pre('save', savePreHook);
 
-export default mongoose.model('list', listSchema);
+export default mongoose.model('task', listSchema);

@@ -28,11 +28,9 @@ taskRouter.post('/tasks', bearerAuthMiddleware, jsonParser, (request, response, 
 });
 
 taskRouter.get('/tasks/:id', bearerAuthMiddleware, (request, response, next) => {
-  console.log(request.params.id);
   return Task.find({ list: request.params.id })
     .then((tasks) => {
-      console.log(tasks, 'these are the tasks');
-      logger.log(logger.INFO, '200 - LIST ROUTER - GET ALL');
+      logger.log(logger.INFO, '200 - TASK ROUTER - GET ALL');
       return response.json(tasks);
     })
     .catch(next);
