@@ -2,6 +2,7 @@
 
 import mongoose from 'mongoose';
 import Profile from './profile';
+import List from './list';
 
 const listSchema = mongoose.Schema({
   title: { 
@@ -11,14 +12,22 @@ const listSchema = mongoose.Schema({
   details: { 
     type: String, 
   },
+  time: {
+    type: Number,
+    default: 30,
+  },
   profile: {
     type: mongoose.Schema.ObjectId,
     required: true,
   },
-  tasks: [
+  list: {
+    type: mongoose.Schema.ObjectId,
+    required: true,
+  },
+  subtasks: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'tasks',
+      ref: 'subtasks',
     },
   ],
 });
@@ -26,10 +35,19 @@ const listSchema = mongoose.Schema({
 function savePreHook(done) {
   return Profile.findById(this.profile)
     .then((profileFound) => {
-      if (profileFound.lists.indexOf(this._id) < 0) {
-        profileFound.lists.push(this._id);
+      if (profileFound.tasks.indexOf(this._id) < 0) {
+        profileFound.tasks.push(this._id);
       }
-      return profileFound.save();
+      return profileFound.save()
+        .then(() => {
+          List.findById(this.list)
+            .then((listFound) => {
+              if (listFound.tasks.indexOf(this._id) < 0) {
+                listFound.tasks.push(this._id);
+              }
+              return listFound.save();
+            });
+        });
     })
     .then(() => {
       return done();
