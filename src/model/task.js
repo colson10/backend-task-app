@@ -16,6 +16,10 @@ const listSchema = mongoose.Schema({
     type: Number,
     default: 30,
   },
+  done: {
+    type: Boolean,
+    default: false,
+  },
   profile: {
     type: mongoose.Schema.ObjectId,
     required: true,
