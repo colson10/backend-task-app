@@ -38,7 +38,7 @@ taskRouter.get('/tasks/:id', bearerAuthMiddleware, (request, response, next) => 
 
 taskRouter.put('/task/:id', bearerAuthMiddleware, (request, response, next) => {
   const options = { runValidators: true, new: true };
-  return Task.findOneAndUpdate(request.params.id, request.body, options)
+  return Task.findByIdAndUpdate(request.params.id, request.body, options)
     .then((task) => {
       console.log(task);
       logger.log(logger.INFO, '200 - TASK ROUTER - UPDATE');
