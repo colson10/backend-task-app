@@ -59,6 +59,7 @@ googleRouter.get('/oauth/google', (request, response) => {
                   user.id = newAccount._id;
                   return newAccount.pCreateLoginToken()
                     .then((token) => {
+                      console.log('token created', token);
                       return createProfile(user)
                         .then(() => {
                           console.log('SENDING TOKEN');
@@ -71,6 +72,7 @@ googleRouter.get('/oauth/google', (request, response) => {
             } 
             return account.pCreateLoginToken()
               .then((token) => {
+                console.log('SENDING TOKEN');
                 return response
                   .cookie('LISTsublist', token)
                   .redirect(process.env.CLIENT_URL);
