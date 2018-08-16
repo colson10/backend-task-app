@@ -74,7 +74,14 @@ googleRouter.get('/oauth/google', (request, response) => {
               .then((token) => {
                 console.log('SENDING TOKEN');
                 return response
-                  .cookie('LISTsublist', token)
+                  .cookie('LISTsublist', token, { 
+                    secure: false, 
+                    maxAge: 900000, 
+                    domain: process.env.CLIENT_URL, 
+                    path: '/', 
+                    signed: false, 
+                    httpOnly: true, 
+                  })
                   .redirect(process.env.CLIENT_URL);
               });
           });
