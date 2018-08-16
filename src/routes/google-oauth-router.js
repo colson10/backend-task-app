@@ -72,15 +72,14 @@ googleRouter.get('/oauth/google', (request, response) => {
             } 
             return account.pCreateLoginToken()
               .then((token) => {
-                console.log('SENDING TOKEN');
+                console.log('SENDING TOKEN', process.env.CLIENT_URL);
                 return response
                   .cookie('LISTsublist', token, { 
                     secure: false, 
                     maxAge: 900000, 
-                    domain: process.env.CLIENT_URL, 
                     path: '/', 
                     signed: false, 
-                    httpOnly: true, 
+                    httpOnly: false, 
                   })
                   .redirect(process.env.CLIENT_URL);
               });
