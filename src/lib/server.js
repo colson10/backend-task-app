@@ -19,6 +19,11 @@ const cookieSession = require('cookie-session');
 const app = express();
 let server = null;
 
+app.use(cors({
+  credentials: true,
+  origin: process.env.CORS_ORIGIN,
+}));
+
 auth(passport);
 app.use(passport.initialize());
 
