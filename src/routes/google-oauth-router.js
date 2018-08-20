@@ -1,22 +1,57 @@
-// 'use strict';
+'use strict';
 
 // import superagent from 'superagent';
-// import { Router } from 'express';
-// import Account from '../model/account';
-// import Profile from '../model/profile';
+import { Router } from 'express';
+import { json } from 'body-parser';
+import Account from '../model/account';
+import Profile from '../model/profile';
 
 // const GOOGLE_OAUTH_URL = 'https://www.googleapis.com/oauth2/v4/token';
 // const OPEN_ID_URL = 'https://www.googleapis.com/plus/v1/people/me/openIdConnect';
 
-// const googleRouter = new Router();
+const googleRouter = new Router();
+const jsonParser = json();
 
-// const createProfile = (user) => {
-//   return new Profile({
-//     username: user.username,
-//     email: user.email,
-//     account: user.id,
-//   }).save();
-// };
+const createProfile = (user) => {
+  return new Profile({
+    username: user.username,
+    email: user.email,
+    googleToken: user.googleToken,
+    account: user.id,
+  }).save();
+};
+
+googleRouter.post('/google', jsonParser, (request, response) => {
+  console.log('inside google router in backend', request.body, 'end of request');
+  const user = {};
+  user.email = request.body.email;
+  user.username = request.body.username;
+  user.googleToken = request.body.googleToken;
+  console.log(request.body, user, 'request and user');
+  return Account.findOne({ email: user.email })
+    .then((account) => {
+      if (!account) {
+        return Account.create(user.email, user.username, user.googleToken)
+          .then((newAccount) => {
+            user.id = newAccount._id;
+            return newAccount.pCreateLoginToken()
+              .then((token) => {
+                console.log('token created', token);
+                return createProfile(user)
+                  .then(() => {
+                    console.log('SENDING TOKEN');
+                    return response.send(token);
+                  });
+              });
+          });
+      } 
+      return account.pCreateLoginToken()
+        .then((token) => {
+          console.log('SENDING TOKEN', process.env.CLIENT_URL);
+          return response.json(token);
+        });
+    });
+});
 
 // googleRouter.get('/oauth/google', (request, response) => {
 //   const user = {};
@@ -93,4 +128,4 @@
 //   return undefined;
 // });
 
-// export default googleRouter;
+export default googleRouter;

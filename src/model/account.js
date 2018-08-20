@@ -13,6 +13,9 @@ const accountSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
+  googleToken: {
+    type: String,
+  },
   tokenSeed: {
     type: String,
     required: true,
@@ -45,11 +48,12 @@ accountSchema.methods.pCreateLoginToken = pCreateLoginToken;
 
 const Account = mongoose.model('account', accountSchema);
 
-Account.create = (email, username) => {
+Account.create = (email, username, googleToken) => {
   const tokenSeed = crypto.randomBytes(TOKEN_SEED_LENGTH).toString('hex');
   return new Account({
     username,
     email,
+    googleToken,
     tokenSeed,
   }).save();
 };

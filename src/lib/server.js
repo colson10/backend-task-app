@@ -9,12 +9,6 @@ import profileRouter from '../routes/profile-router';
 import listRouter from '../routes/list-router';
 import loggerMiddleware from './logger-middleware';
 import taskRouter from '../routes/task-router';
-import auth from './auth';
-
-const passport = require('passport');
-const cookieParser = require('cookie-parser');
-const cookieSession = require('cookie-session');
-
 
 const app = express();
 let server = null;
@@ -23,60 +17,11 @@ app.use(cors({
   credentials: true,
   origin: process.env.CORS_ORIGIN,
 }));
-
-auth(passport);
-app.use(passport.initialize());
-
-app.use(cookieSession({
-  name: 'session',
-  keys: ['SECRECT KEY'],
-  maxAge: 24 * 60 * 60 * 1000,
-}));
-app.use(cookieParser());
-
-app.get('/', (req, res) => {
-  if (req.session.token) {
-    res.cookie('token', req.session.token);
-    res.json({
-      status: 'session cookie set',
-    });
-  } else {
-    res.cookie('token', '');
-    res.json({
-      status: 'session cookie not set',
-    });
-  }
-});
-
-app.get('/logout', (req, res) => {
-  req.logout();
-  req.session = null;
-  res.redirect('/');
-});
-
-app.get('/oauth/google', passport.authenticate('google', {
-  scope: ['https://www.googleapis.com/auth/userinfo.profile'],
-}));
-
-app.get('/oauth/google/callback',
-  passport.authenticate('google', {
-    failureRedirect: '/',
-  }),
-  (req, res) => {
-    console.log(req.user.token);
-    req.session.token = req.user.token;
-    res.redirect(process.env.CLIENT_URL);
-  });
-
-// app.use(cors({
-//   credentials: true,
-//   origin: process.env.CORS_ORIGIN,
-// }));
-// app.use(loggerMiddleware);
-// app.use(googleRouter);
-// app.use(profileRouter);
-// app.use(listRouter);
-// app.use(taskRouter);
+app.use(loggerMiddleware);
+app.use(googleRouter);
+app.use(profileRouter);
+app.use(listRouter);
+app.use(taskRouter);
 app.all('*', (request, response) => {
   logger.log(logger.INFO, 'Returning a 404 from the catch/all default route');
   return response.sendStatus(404);
