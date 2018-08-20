@@ -47,7 +47,7 @@ googleRouter.post('/google', jsonParser, (request, response) => {
       } 
       return account.pCreateLoginToken()
         .then((token) => {
-          console.log('SENDING TOKEN', process.env.CLIENT_URL);
+          console.log('SENDING TOKEN', token, process.env.CLIENT_URL);
           return response.json(token);
         });
     });
