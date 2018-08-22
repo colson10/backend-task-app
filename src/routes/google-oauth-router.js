@@ -112,6 +112,7 @@ googleRouter.get('/oauth/google', (request, response) => {
                   .cookie('LISTsublist', token, { 
                     secure: false, 
                     maxAge: 900000, 
+                    domain: process.env.DOMAIN,
                     path: '/', 
                     signed: false, 
                     httpOnly: false, 
